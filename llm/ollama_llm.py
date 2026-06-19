@@ -6,7 +6,7 @@ class OllamaLLM:
 
     def __init__(
         self,
-        model: str = "qwen3:8b"
+        model: str = "qwen2.5-coder:7b"
     ):
         self.llm = ChatOllama(
             model=model,
