@@ -6,7 +6,7 @@ class BugReport(BaseModel):
         bug_report : str
         bug_report_embedding : list[float]
         
-class Possible_file(BaseModel):
+class File_Code(BaseModel):
         file_path : str
         file_content : str
 
@@ -30,7 +30,7 @@ class AgentState(TypedDict):
     possible_file_paths:list[str]
     possible_files:List[Possible_file]
     file_path:str
-    file_code:Possible_file
+    file_code : File_Code
     bug_location: BugLocation
     fixed_code:str
     possible_test_paths:list[str]
