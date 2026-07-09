@@ -1,3 +1,7 @@
 pydantic
+typing-extensions
 langgraph
+langchain-ollama
 faiss-cpu
+numpy
+pytest
