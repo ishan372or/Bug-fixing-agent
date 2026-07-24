@@ -16,7 +16,7 @@ def store_vector_db(state: IndexingState):
     vectors = np.array([node.embedding for node in repo_embed], dtype=np.float32)
     index = faiss.IndexFlatL2(vectors.shape[1])
     index.add(vectors)
-    faiss.write_index(index, "repo.index")
+    faiss.write_index(index, state["index_path"])
 
     metadata_by_path = {file.file_path: file for file in state["files"]}
     summary_by_path = {summary.file_path: summary.summary for summary in state["summaries"]}
@@ -45,7 +45,7 @@ def store_vector_db(state: IndexingState):
         for file_metadata_by_path in [metadata_by_path[repo_embed_node.file_path]]
     ]
 
-    with open("paths.pkl", "wb") as file_handle:
+    with open(state["metadata_file_path"], "wb") as file_handle:
         pickle.dump([model_to_dict(record) for record in records], file_handle)
 
     return {}

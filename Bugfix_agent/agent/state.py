@@ -53,6 +53,8 @@ class AgentState(TypedDict):
 
     bug_report: BugReport
     repo_path: str
+    index_path: str
+    metadata_file_path: str
     retry_count: int
     repair_history: list[RepairAttempt]
 

@@ -43,8 +43,8 @@ def _fallback_record(file_path: str) -> IndexedFileRecord:
     )
 
 
-def _load_index_records() -> list[IndexedFileRecord]:
-    with open("paths.pkl", "rb") as file_handle:
+def _load_index_records(metadata_path: str) -> list[IndexedFileRecord]:
+    with open(metadata_path, "rb") as file_handle:
         raw_metadata = pickle.load(file_handle)
 
     records: list[IndexedFileRecord] = []
@@ -152,14 +152,14 @@ def generate_bug_report_embeddings(state: AgentState):
 
 
 def semantic_search(state: AgentState):
-    records = _load_index_records()
+    records = _load_index_records(state["metadata_file_path"])
     if not records:
         return {
             "possible_file_paths": [],
             "possible_test_paths": [],
         }
 
-    index = faiss.read_index("repo.index")
+    index = faiss.read_index(state["index_path"])
     query_embedding = np.array([state["bug_report"].bug_report_embedding], dtype=np.float32)
     search_k = min(len(records), max(12, len(records)))
     distances, indices = index.search(query_embedding, k=search_k)
@@ -233,8 +233,8 @@ def _truncate_source(code: str, max_lines: int = 250) -> str:
     return f"{head}\n...\n{tail}"
 
 
-def _load_record_map() -> dict[str, IndexedFileRecord]:
-    return {record.file_path: record for record in _load_index_records()}
+def _load_record_map(state: AgentState) -> dict[str, IndexedFileRecord]:
+    return {record.file_path: record for record in _load_index_records(state["metadata_file_path"])}
 
 
 def _select_relevant_test_files(
@@ -287,7 +287,7 @@ def find_exact_file(state: AgentState):
         selected_file = possible_files[0]
     else:
         llm = OllamaLLM()
-        records_by_path = _load_record_map()
+        records_by_path = _load_record_map(state)
         candidate_sections = []
 
         for file_code in possible_files:
@@ -336,7 +336,7 @@ Return ONLY valid JSON using this schema:
                 selected_file = file_code
                 break
 
-    records_by_path = _load_record_map()
+    records_by_path = _load_record_map(state)
     relevant_test_paths, relevant_test_files = _select_relevant_test_files(selected_file, state, records_by_path)
 
     return {

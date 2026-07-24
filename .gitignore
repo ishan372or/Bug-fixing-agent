@@ -222,3 +222,6 @@ __marimo__/
 
 # .index files
 *.index
+
+# test_api
+test_api.py

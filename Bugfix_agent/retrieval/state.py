@@ -77,6 +77,8 @@ class IndexedFileRecord(BaseModel):
 
 class IndexingState(TypedDict):
     repo_path: str
+    index_path: str
+    metadata_file_path: str
     getfiles: list[GetFiles]
     files: list[FileMetadata]
     summaries: list[SummaryNode]

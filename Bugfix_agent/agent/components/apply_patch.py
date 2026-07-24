@@ -56,7 +56,7 @@ def validate_python_source(source: str, file_path: str) -> str | None:
         compile(source, file_path, "exec")
     except SyntaxError as exc:
         return f"SyntaxError: {exc.msg} (line {exc.lineno}, column {exc.offset})"
-    except Exception as exc:  # pragma: no cover - defensive guard for compile-time failures
+    except Exception as exc: 
         return f"{type(exc).__name__}: {exc}"
 
     return None
